@@ -40,4 +40,20 @@ def deg_to_cardinal(deg):
         "NW",
         "NNW",
     ]
-    return cardinals[round((deg % 360) / 22.5) % 16]
+    n = len(cardinals)
+    degs = 360 / n
+    return cardinals[round((deg % 360) / degs) % n]
+
+
+class Location(object):
+    def __init__(self, lat, lng):
+        self.lat = lat
+        self.lng = lng
+
+    @classmethod
+    def from_labelled(cls, lat, lng):
+        if lat[0] not in "NS" or lng[0] not in "EW":
+            raise Exception("Lat/lng must be formatted as N12.345 and E67.890")
+        nlat = float(lat[1:]) * (-1 if lat[0] == "S" else 1)
+        nlng = float(lng[1:]) * (-1 if lng[0] == "W" else 1)
+        return cls(nlat, nlng)
